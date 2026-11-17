@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "brasil-dados-utilities": {
+      "command": "/CAMINHO/PARA/brasil-dados-utilities/node_modules/.bin/tsx",
+      "args": ["/CAMINHO/PARA/brasil-dados-utilities/src/mcp/stdio.ts"]
+    }
+  }
+}

@@ -1,0 +1,29 @@
+name: CI
+on:
+  push:
+  pull_request:
+
+# o mínimo necessário: só ler o código
+permissions:
+  contents: read
+
+jobs:
+  testes:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      # ações fixadas por commit (tag pode ser movida; commit não)
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Dependências sem vulnerabilidade conhecida
+        run: npm audit --audit-level=moderate
+      - name: Assinaturas dos pacotes do npm
+        run: npm audit signatures
+      - run: npm run typecheck
+      - run: npm test

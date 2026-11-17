@@ -1,0 +1,11 @@
+node_modules
+data
+.env
+.git
+.claude
+coverage
+tests
+docs/*
+!docs/guia-agentes.md
+examples
+*.duckdb*
