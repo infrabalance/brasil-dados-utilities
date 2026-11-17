@@ -17,7 +17,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@duckdb/node-api": "^1.5.6-r.2",
+    "@duckdb/node-api": "^2.0.0-r.1",
     "@hono/node-server": "^2.1.8",
     "@modelcontextprotocol/sdk": "^1.32.2",
     "fflate": "0.8.3",
