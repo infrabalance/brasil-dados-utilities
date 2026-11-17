@@ -134,6 +134,16 @@ export function criarApp(banco: Banco, protecao: OpcoesProtecao = opcoesDoAmbien
   app.get("/guide", (c) => c.body(GUIA, 200, { "content-type": "text/markdown; charset=utf-8" }));
   app.get("/openapi", (c) => c.json(documentoOpenApi()));
 
+  // Quem abre /mcp no navegador recebia o erro cru do protocolo ("Client must accept text/event-stream").
+  // Navegador (pede HTML e não event-stream) ganha uma página dizendo o que é e como conectar.
+  app.get("/mcp", async (c, next) => {
+    const aceita = c.req.header("accept") ?? "";
+    if (!aceita.includes("text/html") || aceita.includes("text/event-stream")) return next();
+    const host = (c.req.header("host") ?? new URL(c.req.url).host).replace(/[^a-zA-Z0-9.:-]/g, "");
+    const local = /^(localhost|127\.0\.0\.1)(:|$)/.test(host);
+    return c.html(paginaMcp(`${local ? "http" : "https"}://${host}/mcp`));
+  });
+
   // MCP por HTTP, sem sessão: um servidor e um transporte por requisição.
   app.all("/mcp", async (c) => {
     const transporte = new WebStandardStreamableHTTPServerTransport({
@@ -152,4 +162,25 @@ export function criarApp(banco: Banco, protecao: OpcoesProtecao = opcoesDoAmbien
   app.onError((e, c) => erro(c, e));
   app.notFound((c) => c.json({ erro: { codigo: "nao_encontrado", mensagem: "Rota inexistente. Veja /." } }, 404));
   return app;
+}
+
+/** Página para quem abre o endereço do MCP no navegador. */
+function paginaMcp(url: string): string {
+  return `<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Brasil Dados Utilities · MCP</title>
+<style>body{font:16px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif;max-width:720px;margin:48px auto;padding:0 16px;color:#13202e;background:#f6f8fb}
+code,pre{font:14px/1.5 ui-monospace,Menlo,Consolas,monospace;background:#e9eef3;border-radius:6px}code{padding:2px 6px}pre{padding:12px 14px;overflow-x:auto}
+h1{font-size:26px;margin:0 0 8px}a{color:#1559b8}small{color:#4d6176}</style></head><body>
+<h1>Servidor MCP de dados públicos do Brasil</h1>
+<p>Este endereço não é uma página: é a porta de conexão para assistentes de IA (Claude, Cursor, VS Code e outros clientes
+<a href="https://modelcontextprotocol.io">MCP</a>) consultarem dados oficiais de saneamento, rios, território e energia
+(SINISA, ANA, IBGE, SGB, ANEEL, ONS), sempre com a fonte e a data de cada número. Só leitura, sem cadastro.</p>
+<p><b>Endereço:</b> <code>${url}</code></p>
+<p><b>Claude Code:</b></p><pre>claude mcp add --transport http brasil-dados ${url}</pre>
+<p><b>Claude (app), Cursor e outros:</b> adicione um servidor MCP remoto (HTTP) com o endereço acima.</p>
+<p>Guia para agentes: <a href="/guide">/guide</a> · Código aberto (MIT):
+<a href="https://github.com/infrabalance/brasil-dados-utilities">github.com/infrabalance/brasil-dados-utilities</a></p>
+<p><small>Uso livre com limite por cliente. Criado e mantido por Balance.ia. — This is an MCP server endpoint, not a web page:
+add it to your MCP client as a remote HTTP server.</small></p>
+</body></html>`;
 }

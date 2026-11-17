@@ -170,6 +170,17 @@ describe("servidor HTTP", () => {
     expect(r.status).toBe(403);
   });
 
+  it("/mcp aberto no navegador mostra como conectar (o protocolo segue igual para clientes MCP)", async () => {
+    const app = criarApp(banco, base);
+    const r = await app.request("http://dados.exemplo.com.br/mcp", { headers: { accept: "text/html,application/xhtml+xml" } });
+    expect(r.status).toBe(200);
+    expect(r.headers.get("content-type")).toMatch(/text\/html/);
+    const html = await r.text();
+    expect(html).toContain("claude mcp add --transport http brasil-dados https://dados.exemplo.com.br/mcp");
+    const cliente = await app.request("/mcp", { headers: { accept: "application/json, text/event-stream" } });
+    expect(cliente.headers.get("content-type") ?? "").not.toMatch(/text\/html/);
+  });
+
   it("limita requisições por minuto", async () => {
     const app = criarApp(banco, { ...base, limitePorMinuto: 2 });
     const s = [];
