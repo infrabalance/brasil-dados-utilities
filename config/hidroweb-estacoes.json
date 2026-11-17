@@ -1,0 +1,13 @@
+{
+  "_leia": "Estações coletadas do Hidroweb (ANA) por `npm run coletar -- hidroweb`. Troque à vontade; códigos em agua.estacoes. BDU_HIDROWEB_ESTACOES=cod,cod no .env tem precedência.",
+  "estacoes": [
+    { "codigo": "14990000", "nome": "MANAUS", "rio": "RIO NEGRO", "uf": "AM" },
+    { "codigo": "14620000", "nome": "BOA VISTA", "rio": "RIO BRANCO", "uf": "RR" },
+    { "codigo": "29050000", "nome": "MARABÁ", "rio": "RIO TOCANTINS", "uf": "PA" },
+    { "codigo": "48020000", "nome": "JUAZEIRO", "rio": "RIO SÃO FRANCISCO", "uf": "BA" },
+    { "codigo": "83800002", "nome": "BLUMENAU (PCD)", "rio": "RIO ITAJAÍ-AÇU", "uf": "SC" },
+    { "codigo": "87450004", "nome": "CAIS MAUÁ C6", "rio": "RIO GUAÍBA", "uf": "RS" },
+    { "codigo": "3051011", "nome": "PORTO ALEGRE", "rio": null, "uf": "RS", "tipo": "pluviométrica" },
+    { "codigo": "549013", "nome": "MARABÁ", "rio": null, "uf": "PA", "tipo": "pluviométrica" }
+  ]
+}
