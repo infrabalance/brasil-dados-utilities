@@ -1,6 +1,8 @@
 name: CI
 on:
+  # push só na main: branches de PR (Dependabot) já rodam pelo pull_request, sem execução duplicada
   push:
+    branches: [main]
   pull_request:
 
 # o mínimo necessário: só ler o código
